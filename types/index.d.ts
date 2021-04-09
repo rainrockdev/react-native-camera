@@ -238,6 +238,7 @@ export interface RNCameraProps {
 
   onFacesDetected?(response: { faces: Face[] }): void;
   onFaceDetectionError?(response: { isOperational: boolean }): void;
+  faceDetectionSamplingPeriod?: number;
   faceDetectionMode?: keyof FaceDetectionMode;
   faceDetectionLandmarks?: keyof FaceDetectionLandmarks;
   faceDetectionClassifications?: keyof FaceDetectionClassifications;

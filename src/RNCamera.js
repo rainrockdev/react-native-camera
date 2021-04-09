@@ -265,6 +265,7 @@ type PropsType = typeof View.props & {
   onDoubleTap?: Function,
   onGoogleVisionBarcodesDetected?: ({ barcodes: Array<TrackedBarcodeFeature> }) => void,
   onSubjectAreaChanged?: ({ nativeEvent: { prevPoint: {| x: number, y: number |} } }) => void,
+  faceDetectionSamplingPeriod?: number,
   faceDetectionMode?: number,
   trackingEnabled?: boolean,
   flashMode?: number | string,
@@ -343,8 +344,6 @@ const CameraManager: Object = NativeModules.RNCameraManager ||
     },
   };
 
-const EventThrottleMs = 500;
-
 const mapValues = (input, mapper) => {
   const result = {};
   Object.entries(input).map(([key, value]) => {
@@ -417,6 +416,7 @@ export default class Camera extends React.Component<PropsType, StateType> {
     onTextRecognized: PropTypes.func,
     onSubjectAreaChanged: PropTypes.func,
     trackingEnabled: PropTypes.bool,
+    faceDetectionSamplingPeriod: PropTypes.number,
     faceDetectionMode: PropTypes.number,
     faceDetectionLandmarks: PropTypes.number,
     faceDetectionClassifications: PropTypes.number,
@@ -464,6 +464,7 @@ export default class Camera extends React.Component<PropsType, StateType> {
     flashMode: CameraManager.FlashMode.off,
     exposure: -1,
     whiteBalance: CameraManager.WhiteBalance.auto,
+    faceDetectionSamplingPeriod: 500,
     faceDetectionMode: (CameraManager.FaceDetection || {}).fast,
     barCodeTypes: Object.values(CameraManager.BarCodeType),
     googleVisionBarcodeType: ((CameraManager.GoogleVisionBarcodeDetection || {}).BarcodeType || {})
@@ -708,7 +709,7 @@ export default class Camera extends React.Component<PropsType, StateType> {
       this._lastEvents[type] &&
       this._lastEventsTimes[type] &&
       JSON.stringify(nativeEvent) === this._lastEvents[type] &&
-      new Date() - this._lastEventsTimes[type] < EventThrottleMs
+      new Date() - this._lastEventsTimes[type] < this.props.faceDetectionSamplingPeriod
     ) {
       return;
     }

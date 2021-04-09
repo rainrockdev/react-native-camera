@@ -275,6 +275,10 @@ RCT_CUSTOM_VIEW_PROPERTY(pictureSize, NSString *, RNCamera)
     [view updatePictureSize];
 }
 
+RCT_CUSTOM_VIEW_PROPERTY(faceDetectionSamplingPeriod, NSInteger, RNCamera)
+{
+    view.faceDetectionSamplingPeriod = [RCTConvert CGFloat:json] / 1000;
+}
 
 RCT_CUSTOM_VIEW_PROPERTY(faceDetectorEnabled, BOOL, RNCamera)
 {
